@@ -4,5 +4,5 @@ This is a collection of libraries that I wrote to add extra functionality to the
 
 Each library is in the lib folder and it is made up only one header and implementation file that you can easily copy into your project.
 
-Features:
+# Features:
     - Heap allocated strings
