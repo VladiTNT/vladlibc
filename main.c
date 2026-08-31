@@ -2,13 +2,14 @@
 #include "lib/strv.h"
 
 int main(void) {
-    struct strv s1 = strv_new_from_literal("Many nerds code in C\n");
-    struct strv s2 = strv_clone(s1);
+    struct strv s = strv_new_from_literal("Vlad is cool!");
+    
+    int count;
+    struct strv* ss = strv_split(s, ' ', &count);
 
-    printf("%.*s", s1.len, s1.data);
-    printf("%.*s", s2.len, s2.data);
-
-    printf("%d %d\n", s1.data, s2.data);
+    for (int i = 0; i < count; i++) {
+        printf("%.*s\n", ss[i].len, ss[i].data);
+    }
 
     return 0;
 }

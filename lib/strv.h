@@ -71,7 +71,9 @@ bool strv_contains_literal(struct strv s, const char* buff);
 /*
 Splits s into it's substrings based on the given separator.
 It returns a pointer to the first substring and it stores the amount of substrings into n.
+If the function fails it will return NULL.
+You will have to manually free the memory of the result strings.
 */
-struct strv* strv_split(struct strv* s, char sep, int* n);
+struct strv* strv_split(struct strv s, char sep, int* n);
 
 #endif

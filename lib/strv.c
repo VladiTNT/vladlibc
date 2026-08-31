@@ -177,3 +177,109 @@ struct strv strv_clone(struct strv s) {
 
     return new_s;
 }
+
+bool strv_contains_char(struct strv s, char c) {
+    for (size_t i = 0; i < s.len; i++) {
+        if (*(s.data + i) == c) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool strv_contains(struct strv s1, struct strv s2) {
+    for (size_t i = 0; i < s1.len; i++) {
+        /* If a byte of s1 is equal to the first byte of s2 */
+        if (*(s1.data + i) == *(s2.data)) {
+            bool found_flag = true;
+            /* We compare the next bytes. */
+            for (size_t j = 1; j < s2.len; j++) {
+                /* If one isn't equal, we break and set the flag */
+                if (*(s1.data + i + j) != *(s2.data + j)) {
+                    found_flag = false;
+                    break;
+                }
+            }
+
+            if (found_flag) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool strv_contains_literal(struct strv s, const char* buff) {
+    size_t buff_len = strlen(buff);
+
+    for (size_t i = 0; i < s.len; i++) {
+        if (*(s.data + i) == *(buff)) {
+            bool found_flag = true;
+            for (size_t j = 1; j < buff_len; j++) {
+                if (*(s.data + i + j) != *(buff + j)) {
+                    found_flag = false;
+                    break;
+                }
+            }
+
+            if (found_flag) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+struct strv* strv_split(struct strv s, char sep, int* n) {
+    if (!s.data || !n) return NULL;
+
+    /* Allocate memory for delimiters */
+    size_t* seps = malloc(sizeof(size_t) * (s.len + 2));
+    if (!seps) return NULL;
+
+    int seps_count = 0;
+    seps[seps_count++] = (size_t)-1;
+
+    for (size_t i = 0; i < s.len; i++) {
+        if (s.data[i] == sep) {
+            seps[seps_count++] = i;
+        }
+    }
+    seps[seps_count++] = s.len;
+
+    /* Count valid substrings */
+    *n = 0;
+    for (size_t i = 1; i < seps_count; i++) {
+        if (seps[i] - seps[i-1] > 1) {
+            (*n)++;
+        }
+    }
+
+    if (*n == 0) {
+        free(seps);
+        return NULL;
+    }
+
+    struct strv* result_strings = malloc(sizeof(*result_strings) * (*n));
+    if (!result_strings) {
+        free(seps);
+        return NULL;
+    }
+    int curr_string = 0;
+
+    for (size_t i = 1; i < seps_count; i++) {
+        size_t sub_string_len = seps[i] - seps[i-1] - 1;
+        if (sub_string_len > 0) {
+            struct strv temp_string = strv_new_with_cap(sub_string_len);
+            
+            memcpy(temp_string.data, s.data + seps[i-1] + 1, sub_string_len);
+            temp_string.len = sub_string_len;
+
+            result_strings[curr_string++] = temp_string;
+        }
+    }
+
+    free(seps);
+    return result_strings;
+}
