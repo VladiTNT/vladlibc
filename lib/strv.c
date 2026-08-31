@@ -32,11 +32,11 @@ struct strv strv_new_with_cap(size_t cap) {
     return s;
 }
 
-struct strv strv_new_from_literal(const char* string) {
+struct strv strv_new_from_literal(const char* string) {    
     size_t string_len = strlen(string);
 
     struct strv s = strv_new_with_cap(2 * string_len);
-    if (s.err != NO_ERROR) {
+    if (s.err) {
         return s;
     }
 
@@ -48,6 +48,8 @@ struct strv strv_new_from_literal(const char* string) {
 }
 
 void strv_destroy(struct strv* s) {
+    if (!s) return;
+
     if (s->err == STRING_DESTORYED_ERROR) {
         return;
     }
@@ -61,6 +63,8 @@ void strv_destroy(struct strv* s) {
 }
 
 void strv_new_cap(struct strv* s, size_t cap) {
+    if (!s) return;
+
     if (s->cap >= cap) {
         return;
     }
@@ -84,24 +88,28 @@ size_t strv_available(struct strv s) {
     return s.cap - s.len;
 }
 
-void strv_append(struct strv* s1, struct strv* s2) {
+void strv_append(struct strv* s1, struct strv s2) {
+    if (!s1) return;
+
     size_t available_in_s1 = strv_available(*s1);
 
-    if (available_in_s1 < s2->len) {
-        strv_increase_cap(s1, s2->len * 2);
+    if (available_in_s1 < s2.len) {
+        strv_increase_cap(s1, s2.len * 2);
         if (s1->err) {
             return;
         }
     }
 
-    memcpy(s1->data + s1->len, s2->data, s2->len);
+    memcpy(s1->data + s1->len, s2.data, s2.len);
 
-    s1->len += s2->len;
+    s1->len += s2.len;
 
     return;
 }
 
 void strv_append_literal(struct strv* s, const char* buff) {
+    if (!s) return;
+
     size_t buff_len = strlen(buff);
     size_t available_in_s = strv_available(*s);
 
@@ -119,13 +127,13 @@ void strv_append_literal(struct strv* s, const char* buff) {
     return;
 }
 
-bool strv_equal(struct strv* s1, struct strv* s2) {
-    if (s1->len != s2->len) {
+bool strv_equal(struct strv s1, struct strv s2) {
+    if (s1.len != s2.len) {
         return false;
     }
 
-    for (size_t i = 0; i < s1->len; i++) {
-        if (*(s1->data+i) != *(s2->data+i)) {
+    for (size_t i = 0; i < s1.len; i++) {
+        if (s1.data[i] != s2.data[i]) {
             return false;
         }
     }
@@ -134,6 +142,8 @@ bool strv_equal(struct strv* s1, struct strv* s2) {
 }
 
 void strv_write_literal(struct strv* s, const char* buff) {
+    if (!s) return;
+
     size_t buff_len = strlen(buff);
 
     if (s->cap < buff_len) {
@@ -150,17 +160,19 @@ void strv_write_literal(struct strv* s, const char* buff) {
     return;
 }
 
-void strv_write(struct strv* s1, struct strv* s2) {
-    if (s1->cap < s2->len) {
-        strv_increase_cap(s1, s2->len * 2);
+void strv_write(struct strv* s1, struct strv s2) {
+    if (!s1) return;
+
+    if (s1->cap < s2.len) {
+        strv_increase_cap(s1, s2.len * 2);
         if (s1->err) {
             return;
         }
     }   
 
-    memcpy(s1->data, s2->data, s2->len);
+    memcpy(s1->data, s2.data, s2.len);
 
-    s1->len = s2->len;
+    s1->len = s2.len;
 
     return;
 }
