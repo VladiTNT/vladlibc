@@ -42,19 +42,19 @@ void strv_increase_cap(struct strv* s, size_t cap);
 size_t strv_available(struct strv s);
 
 /* Appends the contents of s2 to s1. */
-void strv_append(struct strv* s1, struct strv* s2);
+void strv_append(struct strv* s1, struct strv s2);
 
 /* Appends the string literal to s. */
 void strv_append_literal(struct strv* s, const char* buff);
 
 /* Returns true if the provided strings are equal. */
-bool strv_equal(struct strv* s1, struct strv* s2);
+bool strv_equal(struct strv s1, struct strv s2);
 
 /* Replaces the contents of s with the provided literal. */
 void strv_write_literal(struct strv* s, const char* buff);
 
 /* Replaces the contents of s1 with those of s2. */
-void strv_write(struct strv* s1, struct strv* s2);
+void strv_write(struct strv* s1, struct strv s2);
 
 /* Makes a copy s. */
 struct strv strv_clone(struct strv s);

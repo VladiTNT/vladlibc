@@ -1,0 +1,10 @@
+{
+    "name": "Vlad",
+    "age": 18,
+    "balance": 827.2,
+    "active": true,
+    "attributes": {
+        "inventory": ["Sword", "Apple", "C programming language"]
+    },
+    "life": null
+}
