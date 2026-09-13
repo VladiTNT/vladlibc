@@ -25,3 +25,12 @@ char* file_load(const char* path) {
 
     return buffer;
 }
+
+void file_write(const char* path, const char* buffer, size_t buff_len) {
+    FILE* f = fopen(path, "w");
+    if (!f) return;
+
+    fwrite(buffer, sizeof(char), buff_len, f);
+
+    fclose(f);
+}

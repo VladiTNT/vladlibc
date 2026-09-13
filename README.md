@@ -6,3 +6,4 @@ Each library is in the lib folder and it is made up only one header and implemen
 
 # Features:
     - Heap allocated strings
+    - File utilities
